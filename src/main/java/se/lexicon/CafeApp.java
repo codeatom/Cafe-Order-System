@@ -27,12 +27,22 @@ public class CafeApp {
 
         double subtotal = calculateSubtotal(unitPrice, quantity);
 
+        boolean loyaltyMember = isLoyaltyMember(scanner);
+        double discount = calculateDiscount(subtotal, loyaltyMember);
+
+        double priceAfterDiscount = subtotal - discount;
+
+        double vat = calculateVat(priceAfterDiscount);
+        double total = priceAfterDiscount + vat;
 
         printReceipt(
                 customerName,
                 itemName,
                 quantity,
-                subtotal
+                subtotal,
+                discount,
+                vat,
+                total
         );
 
         scanner.close();
@@ -123,11 +133,51 @@ public class CafeApp {
         return unitPrice * quantity;
     }
 
+    private boolean isLoyaltyMember(Scanner scanner) {
+        while (true) {
+            System.out.print("Loyalty member? (yes/no): ");
+
+            String answer = scanner.next().trim().toLowerCase();
+
+            if (answer.equals("yes")) {
+                return true;
+            }
+
+            if (answer.equals("no")) {
+                return false;
+            }
+
+            System.out.println("Please answer yes or no.");
+        }
+    }
+
+    private double calculateDiscount(
+            double subtotal,
+            boolean loyaltyMember) {
+
+        if (loyaltyMember) {
+            return subtotal * MEMBER_DISCOUNT_RATE;
+        }
+        
+        if (subtotal > DISCOUNT_THRESHOLD) {
+            return subtotal * LARGE_ORDER_DISCOUNT_RATE;
+        }
+
+        return 0.00;
+    }
+
+    private double calculateVat(double priceAfterDiscount) {
+        return priceAfterDiscount * VAT_RATE;
+    }
+
     private void printReceipt(
             String customerName,
             String itemName,
             int quantity,
-            double subtotal) {
+            double subtotal,
+            double discount,
+            double vat,
+            double total) {
 
         System.out.println();
         System.out.println("==============================");
@@ -138,6 +188,13 @@ public class CafeApp {
         System.out.printf("Item      : %s x %d%n", itemName, quantity);
         System.out.printf("Subtotal  : %.2f SEK%n", subtotal);
 
+        if (discount > 0) {
+            System.out.printf("Discount  : -%.2f SEK%n", discount);
+        }
+
+        System.out.printf("VAT       : %.2f SEK%n", vat);
+        System.out.println("------------------------------");
+        System.out.printf("TOTAL     : %.2f SEK%n", total);
         System.out.println("==============================");
         System.out.printf("   Thank you, %s!%n", customerName);
         System.out.println("   See you next time.");

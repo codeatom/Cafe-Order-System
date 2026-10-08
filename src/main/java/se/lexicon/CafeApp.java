@@ -9,48 +9,102 @@ public class CafeApp {
     private static final double LARGE_ORDER_DISCOUNT_RATE = 0.10;
     private static final double DISCOUNT_THRESHOLD = 150.00;
 
-
-
     public void start() {
         Scanner scanner = new Scanner(System.in);
 
-        String customerName = getCustomerName(scanner);
+        int customersServed = 0;
+        double totalRevenue = 0.00;
 
-        greetCustomer(customerName);
-        displayMenu();
+        while (true) {
 
-        int itemNumber = getItemNumber(scanner);
-        int quantity = getQuantity(scanner);
+            if (!startNextCustomer(scanner)) {
+                break;
+            }
 
-        String itemName = getItemName(itemNumber);
-        double unitPrice = getItemPrice(itemNumber);
+            String customerName = getCustomerName(scanner);
 
-        double subtotal = calculateSubtotal(unitPrice, quantity);
+            // "done" can also be entered instead of a customer name.
+            if (customerName == null) {
+                break;
+            }
 
-        boolean loyaltyMember = isLoyaltyMember(scanner);
-        double discount = calculateDiscount(subtotal, loyaltyMember);
+            greetCustomer(customerName);
+            displayMenu();
 
-        double priceAfterDiscount = subtotal - discount;
+            int itemNumber = getItemNumber(scanner);
+            int quantity = getQuantity(scanner);
 
-        double vat = calculateVat(priceAfterDiscount);
-        double total = priceAfterDiscount + vat;
+            String itemName = getItemName(itemNumber);
+            double unitPrice = getItemPrice(itemNumber);
 
-        printReceipt(
-                customerName,
-                itemName,
-                quantity,
-                subtotal,
-                discount,
-                vat,
-                total
-        );
+            double subtotal = calculateSubtotal(unitPrice, quantity);
+
+            boolean loyaltyMember = isLoyaltyMember(scanner);
+            double discount = calculateDiscount(subtotal, loyaltyMember);
+
+            double priceAfterDiscount = subtotal - discount;
+
+            double vat = calculateVat(priceAfterDiscount);
+            double total = priceAfterDiscount + vat;
+
+            printReceipt(
+                    customerName,
+                    itemName,
+                    quantity,
+                    subtotal,
+                    discount,
+                    vat,
+                    total
+            );
+
+            customersServed++;
+            totalRevenue += total;
+        }
+
+        printEndOfDayReport(customersServed, totalRevenue);
 
         scanner.close();
     }
 
+    private boolean startNextCustomer(Scanner scanner) {
+        while (true) {
+            System.out.println();
+            System.out.println("Cashier Please Enter");
+            System.out.println("NEXT to continue");
+            System.out.println("DONE to exit");
+            System.out.println();
+
+
+            String command = scanner.next().trim().toLowerCase();
+
+            if (command.equals("next")) {
+                return true;
+            }
+
+            if (command.equalsIgnoreCase("DONE")) {
+                return false;
+            }
+
+            System.out.println();
+            System.out.println("Cashier Please Enter");
+            System.out.println("NEXT to continue");
+            System.out.println("DONE to exit");
+            System.out.println();
+
+        }
+    }
+
     private String getCustomerName(Scanner scanner) {
-        System.out.print("Welcome! What is your name? ");
-        return scanner.nextLine();
+        System.out.println();
+        System.out.print("Welcome! What is your name?");
+
+        String customerName = scanner.next().trim();
+
+        if (customerName.equalsIgnoreCase("DONE")) {
+            return null;
+        }
+
+        return customerName;
     }
 
     private void greetCustomer(String customerName) {
@@ -158,7 +212,7 @@ public class CafeApp {
         if (loyaltyMember) {
             return subtotal * MEMBER_DISCOUNT_RATE;
         }
-        
+
         if (subtotal > DISCOUNT_THRESHOLD) {
             return subtotal * LARGE_ORDER_DISCOUNT_RATE;
         }
@@ -201,5 +255,16 @@ public class CafeApp {
         System.out.println("==============================");
     }
 
+    private void printEndOfDayReport(
+            int customersServed,
+            double totalRevenue) {
 
+        System.out.println();
+        System.out.println("==============================");
+        System.out.println("      END OF DAY REPORT");
+        System.out.println("==============================");
+        System.out.printf("Customers served : %d%n", customersServed);
+        System.out.printf("Total revenue    : %.2f SEK%n", totalRevenue);
+        System.out.println("==============================");
+    }
 }

@@ -1,5 +1,6 @@
 package main.java.se.lexicon;
 
+import java.util.ArrayList;
 
 public class Order {
 
@@ -9,13 +10,23 @@ public class Order {
     private static final double DISCOUNT_THRESHOLD = 150.00;
 
     private String customerName;
-    private String itemName;
-    private int quantity;
-    private double unitPrice;
     private boolean loyaltyMember;
 
+    private ArrayList<LineItem> items = new ArrayList<>();
+
+    public void addItem(String itemName, double unitPrice, int quantity) {
+        LineItem lineItem = new LineItem(itemName, unitPrice, quantity);
+        items.add(lineItem);
+    }
+
     public double calculateSubtotal() {
-        return unitPrice * quantity;
+        double subtotal = 0.00;
+
+        for (LineItem item : items) {
+            subtotal += item.lineTotal();
+        }
+
+        return subtotal;
     }
 
     public double calculateDiscount() {
@@ -58,7 +69,18 @@ public class Order {
         System.out.println("==============================");
 
         System.out.printf("Customer  : %s%n", customerName);
-        System.out.printf("Item      : %s x %d%n", itemName, quantity);
+        System.out.println("------------------------------");
+
+        for (LineItem item : items) {
+            System.out.printf(
+                    "  %-15s x%-3d %7.2f SEK%n",
+                    item.getItemName(),
+                    item.getQuantity(),
+                    item.lineTotal()
+            );
+        }
+
+        System.out.println("------------------------------");
         System.out.printf("Subtotal  : %.2f SEK%n", subtotal);
 
         if (discount > 0) {
@@ -82,35 +104,15 @@ public class Order {
         this.customerName = customerName;
     }
 
-    public String getItemName() {
-        return itemName;
-    }
-
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public double getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(double unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
     public boolean isLoyaltyMember() {
         return loyaltyMember;
     }
 
     public void setLoyaltyMember(boolean loyaltyMember) {
         this.loyaltyMember = loyaltyMember;
+    }
+
+    public ArrayList<LineItem> getItems() {
+        return items;
     }
 }

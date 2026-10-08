@@ -18,7 +18,6 @@ public class CafeApp {
 
             String customerName = getCustomerName(scanner);
 
-            // Cashier can enter "done" instead of a customer name.
             if (customerName == null) {
                 break;
             }
@@ -26,23 +25,31 @@ public class CafeApp {
             greetCustomer(customerName);
             displayMenu();
 
-            int itemNumber = getItemNumber(scanner);
-            int quantity = getQuantity(scanner);
-
-            String itemName = getItemName(itemNumber);
-            double unitPrice = getItemPrice(itemNumber);
-
             boolean loyaltyMember = isLoyaltyMember(scanner);
 
-            // Create a new Order object.
             Order order = new Order();
-
-            // Set the order data. Order handles calculations and receipt printing.
             order.setCustomerName(customerName);
-            order.setItemName(itemName);
-            order.setQuantity(quantity);
-            order.setUnitPrice(unitPrice);
             order.setLoyaltyMember(loyaltyMember);
+
+            // Inner loop to add multiple items to the same order.
+            while (true) {
+
+                int itemNumber = getItemNumber(scanner);
+
+                if (itemNumber == 0) {
+                    break;
+                }
+
+                int quantity = getQuantity(scanner);
+
+                String itemName = getItemName(itemNumber);
+                double unitPrice = getItemPrice(itemNumber);
+
+                order.addItem(itemName, unitPrice, quantity);
+
+                System.out.println(itemName + " added.");
+                System.out.println();
+            }
 
             order.printReceipt();
 
@@ -74,10 +81,7 @@ public class CafeApp {
             }
 
             System.out.println();
-            System.out.println("Cashier Please Enter");
-            System.out.println("NEXT to continue");
-            System.out.println("DONE to exit");
-            System.out.println();
+            System.out.println("Please enter NEXT or DONE.");
         }
     }
 
@@ -113,19 +117,21 @@ public class CafeApp {
 
     private int getItemNumber(Scanner scanner) {
         while (true) {
-            System.out.print("Enter item number (1-5): ");
+            System.out.print("Enter item number (1-5, or 0 to finish): ");
 
             if (scanner.hasNextInt()) {
                 int itemNumber = scanner.nextInt();
 
-                if (itemNumber >= 1 && itemNumber <= 5) {
+                if (itemNumber >= 0 && itemNumber <= 5) {
                     return itemNumber;
                 }
             } else {
                 scanner.next();
             }
 
-            System.out.println("Please enter a number between 1 and 5.");
+            System.out.println(
+                    "Please enter a number between 1 and 5, or 0 to finish."
+            );
         }
     }
 

@@ -32,4 +32,42 @@ public class CafeApp {
         System.out.println("==============================");
         System.out.println();
     }
+
+    private int getItemNumber(Scanner scanner) {
+        while (true) {
+            System.out.print("Enter item number (1-5): ");
+
+            if (scanner.hasNextInt()) {
+                int itemNumber = scanner.nextInt();
+
+                if (itemNumber >= 1 && itemNumber <= 5) {
+                    return itemNumber;
+                }
+            } else {
+                scanner.next();
+            }
+
+            System.out.println("Please enter a number between 1 and 5.");
+        }
+    }
+
+    private int getQuantity(Scanner scanner) {
+        while (true) {
+            System.out.print("How many? ");
+
+            if (scanner.hasNextInt()) {
+                int quantity = scanner.nextInt();
+
+                if (quantity > 0) {
+                    return quantity;
+                }
+            } else {
+                scanner.next();
+            }
+
+            System.out.println("Please enter a quantity greater than 0.");
+        }
+    }
+
+
 }

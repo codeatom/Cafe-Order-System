@@ -10,6 +10,34 @@ public class CafeApp {
     private static final double DISCOUNT_THRESHOLD = 150.00;
 
 
+
+    public void start() {
+        Scanner scanner = new Scanner(System.in);
+
+        String customerName = getCustomerName(scanner);
+
+        greetCustomer(customerName);
+        displayMenu();
+
+        int itemNumber = getItemNumber(scanner);
+        int quantity = getQuantity(scanner);
+
+        String itemName = getItemName(itemNumber);
+        double unitPrice = getItemPrice(itemNumber);
+
+        double subtotal = calculateSubtotal(unitPrice, quantity);
+
+
+        printReceipt(
+                customerName,
+                itemName,
+                quantity,
+                subtotal
+        );
+
+        scanner.close();
+    }
+
     private String getCustomerName(Scanner scanner) {
         System.out.print("Welcome! What is your name? ");
         return scanner.nextLine();
@@ -67,6 +95,53 @@ public class CafeApp {
 
             System.out.println("Please enter a quantity greater than 0.");
         }
+    }
+
+    private String getItemName(int itemNumber) {
+        return switch (itemNumber) {
+            case 1 -> "Espresso";
+            case 2 -> "Cappuccino";
+            case 3 -> "Latte";
+            case 4 -> "Croissant";
+            case 5 -> "Sandwich";
+            default -> "";
+        };
+    }
+
+    private double getItemPrice(int itemNumber) {
+        return switch (itemNumber) {
+            case 1 -> 25.00;
+            case 2 -> 35.00;
+            case 3 -> 40.00;
+            case 4 -> 30.00;
+            case 5 -> 55.00;
+            default -> 0.00;
+        };
+    }
+
+    private double calculateSubtotal(double unitPrice, int quantity) {
+        return unitPrice * quantity;
+    }
+
+    private void printReceipt(
+            String customerName,
+            String itemName,
+            int quantity,
+            double subtotal) {
+
+        System.out.println();
+        System.out.println("==============================");
+        System.out.println("      LEXICON CAFE");
+        System.out.println("==============================");
+
+        System.out.printf("Customer  : %s%n", customerName);
+        System.out.printf("Item      : %s x %d%n", itemName, quantity);
+        System.out.printf("Subtotal  : %.2f SEK%n", subtotal);
+
+        System.out.println("==============================");
+        System.out.printf("   Thank you, %s!%n", customerName);
+        System.out.println("   See you next time.");
+        System.out.println("==============================");
     }
 
 

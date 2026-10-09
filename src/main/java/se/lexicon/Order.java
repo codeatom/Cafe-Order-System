@@ -94,6 +94,7 @@ public class Order {
         System.out.printf("   Thank you, %s!%n", customerName);
         System.out.println("   See you next time.");
         System.out.println("==============================");
+        System.out.println("");
     }
 
     public String getCustomerName() {

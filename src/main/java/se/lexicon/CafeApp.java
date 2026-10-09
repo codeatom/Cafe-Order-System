@@ -10,12 +10,10 @@ public class CafeApp {
         int customersServed = 0;
         double totalRevenue = 0.00;
 
+        System.out.println("");
+        System.out.println("-----------Cashier, please enter **DONE** to exit at any time-----------");
+
         while (true) {
-
-            if (!startNextCustomer(scanner)) {
-                break;
-            }
-
             String customerName = getCustomerName(scanner);
 
             if (customerName == null) {
@@ -41,9 +39,9 @@ public class CafeApp {
                 }
 
                 int quantity = getQuantity(scanner);
+                double unitPrice = getItemPrice(itemNumber);
 
                 String itemName = getItemName(itemNumber);
-                double unitPrice = getItemPrice(itemNumber);
 
                 order.addItem(itemName, unitPrice, quantity);
 
@@ -62,36 +60,22 @@ public class CafeApp {
         scanner.close();
     }
 
-    private boolean startNextCustomer(Scanner scanner) {
-        while (true) {
-            System.out.println();
-            System.out.println("Cashier Please Enter");
-            System.out.println("NEXT to continue");
-            System.out.println("DONE to exit");
-            System.out.println();
-
-            String command = scanner.next().trim().toLowerCase();
-
-            if (command.equals("next")) {
-                return true;
-            }
-
-            if (command.equals("done")) {
-                return false;
-            }
-
-            System.out.println();
-            System.out.println("Please enter NEXT or DONE.");
-        }
-    }
-
     private String getCustomerName(Scanner scanner) {
-        System.out.print("Welcome! What is your name? ");
+        System.out.println("");
+        System.out.println("******** Next Customer ********");
+        System.out.println("Welcome! What is your name? ");
 
         String customerName = scanner.next().trim();
 
         if (customerName.equalsIgnoreCase("done")) {
-            return null;
+            System.out.print("Are you sure you want to exit? (yes/no): ");
+            String answer = scanner.next().trim();
+
+            if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
+                return null;
+            }
+
+            return getCustomerName(scanner);
         }
 
         return customerName;
@@ -99,7 +83,6 @@ public class CafeApp {
 
     private void greetCustomer(String customerName) {
         System.out.println("Hi " + customerName + "! Here is our menu:");
-        System.out.println();
     }
 
     private void displayMenu() {
@@ -117,7 +100,7 @@ public class CafeApp {
 
     private int getItemNumber(Scanner scanner) {
         while (true) {
-            System.out.print("Enter item number (1-5, or 0 to finish): ");
+            System.out.println("Enter item number (1-5, or 0 to finish): ");
 
             if (scanner.hasNextInt()) {
                 int itemNumber = scanner.nextInt();
@@ -137,7 +120,7 @@ public class CafeApp {
 
     private int getQuantity(Scanner scanner) {
         while (true) {
-            System.out.print("How many? ");
+            System.out.println("How many? ");
 
             if (scanner.hasNextInt()) {
                 int quantity = scanner.nextInt();
@@ -177,15 +160,15 @@ public class CafeApp {
 
     private boolean isLoyaltyMember(Scanner scanner) {
         while (true) {
-            System.out.print("Loyalty member? (yes/no): ");
+            System.out.println("Loyalty member? (yes/no): ");
 
             String answer = scanner.next().trim().toLowerCase();
 
-            if (answer.equals("yes")) {
+            if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
                 return true;
             }
 
-            if (answer.equals("no")) {
+            if (answer.equalsIgnoreCase("no") || answer.equalsIgnoreCase("n")) {
                 return false;
             }
 
